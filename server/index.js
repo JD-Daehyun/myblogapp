@@ -1,11 +1,15 @@
 const express = require("express");
 const cors = require("cors");
+const blogRouter = require("./route/blog-route");
 
-require('./db');
+require("./db");
 
 const app = express();
 app.use(cors);
 app.use(express.json());
+
+//path to access the blog router
+app.use("/api/blogs", blogRouter);
 
 app.use("/api", (req, res) => {
   res.send("Hello World");
