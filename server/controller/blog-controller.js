@@ -63,3 +63,27 @@ const deleteBlog = async (req, res) => {
     return res.staus(500).json({ message: "Unable To Delete! Try Again" });
   }
 };
+
+const updateBlog = async (req, res) => {
+  const id = req.params.id;
+  const { title, description } = req.body;
+  let currentBlogToUpdate;
+  try {
+    currentBlogToUpdate = await Blog.findByIdAndUpdate(id, {
+      title,
+      description,
+    });
+  } catch (e) {
+    console.log(e);
+
+    return res
+      .send(500)
+      .json({ message: "Something Went Wrong! Please Try Again" });
+  }
+  if (!currentBlogToUpdate) {
+    return res.status(500).json({ message: "Unable to Update! Try Again" });
+  }
+  return res.send(200).json({ currentBlogToUpdate });
+};
+
+module.exports = { fetchListOfBlogs, deleteBlog, updateBlog, addNewBlog };
