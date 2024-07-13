@@ -27,13 +27,14 @@ const addNewBlog = async (req, res) => {
   const { title, description } = req.body;
   const currentDate = new Date();
 
-  const newlyCreatedBlog = new Blog({
+  const newlyCreateBlog = new Blog({
     title,
     description,
     date: currentDate,
   });
+
   try {
-    await new newlyCreatedBlog.save();
+    await newlyCreateBlog.save();
   } catch (e) {
     console.log(e);
   }
@@ -41,33 +42,39 @@ const addNewBlog = async (req, res) => {
   try {
     const session = await mongoose.startSession();
     session.startTransaction();
-    await newlyCreatedBlog.save(session);
+    await newlyCreateBlog.save(session);
     session.commitTransaction();
   } catch (e) {
     return res.send(500).json({ message: e });
   }
 
-  return res.status(200).json({ newlyCreatedBlog });
+  return res.status(200).json({ newlyCreateBlog });
 };
 
 const deleteBlog = async (req, res) => {
   const id = req.params.id;
+
   try {
     const findCurrentBlog = await Blog.findByIdAndDelete(id);
     if (!findCurrentBlog) {
       return res.status(404).json({ message: "Blog Not Found" });
     }
-    return res.status(200).message({ message: "Deleted!" });
+
+    return res.status(200).json({ message: "Successfully Deleted" });
   } catch (e) {
     console.log(e);
-    return res.staus(500).json({ message: "Unable To Delete! Try Again" });
+    return res
+      .status(500)
+      .json({ message: "Unable to delete ! Please try again" });
   }
 };
 
 const updateBlog = async (req, res) => {
   const id = req.params.id;
+
   const { title, description } = req.body;
   let currentBlogToUpdate;
+
   try {
     currentBlogToUpdate = await Blog.findByIdAndUpdate(id, {
       title,
@@ -76,14 +83,16 @@ const updateBlog = async (req, res) => {
   } catch (e) {
     console.log(e);
 
-    return res
-      .send(500)
-      .json({ message: "Something Went Wrong! Please Try Again" });
+    return res.status(500).json({
+      message: "Something went wrong while updating ! Please try again",
+    });
   }
+
   if (!currentBlogToUpdate) {
-    return res.status(500).json({ message: "Unable to Update! Try Again" });
+    return res.status(500).json({ message: "Unable to Update" });
   }
-  return res.send(200).json({ currentBlogToUpdate });
+
+  return res.status(200).json({ currentBlogToUpdate });
 };
 
 module.exports = { fetchListOfBlogs, deleteBlog, updateBlog, addNewBlog };

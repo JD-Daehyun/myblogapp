@@ -8,8 +8,8 @@ export default function AddNewBlog() {
   console.log(formData);
   async function handleSaveBlogToDatabase() {
     const response = await axios.post("http://localhost:5000/api/blogs/add", {
-      title: formData.title,
-      description: formData.description,
+      title : formData.title,
+      description : formData.description,
     });
 
     const result = await response.data;

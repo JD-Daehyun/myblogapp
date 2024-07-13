@@ -5,14 +5,13 @@ const blogRouter = require("./route/blog-route");
 require("./db");
 
 const app = express();
-app.use(cors);
+app.use(cors());
 app.use(express.json());
 
-//path to access the blog router
 app.use("/api/blogs", blogRouter);
 
 app.use("/api", (req, res) => {
-  res.send("Hello World");
+  res.status(200).json({message : "Hello World"});
 });
 
-app.listen(5000, () => console.log("App is running at 5000!"));
+app.listen(5000, () => console.log(`App is running at 5000...`));
