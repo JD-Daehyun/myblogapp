@@ -1,7 +1,8 @@
 import { useContext, useEffect } from "react";
 import { GlobalContext } from "../../context";
 import axios from "axios";
-
+import styles from './styles.modules.css';
+import {FaTrash, FaEdit} from 'react-icons/fa'
 export default function Home() {
   const { blogList, setBlogList, pending, setPending } =
     useContext(GlobalContext);
@@ -19,21 +20,28 @@ export default function Home() {
       setBlogList([]);
     }
   }
+
+  async function handleDeleteBlog(getCurrentId){
+    
+  }
+
   useEffect(() => {
     fetchListOfBlogs();
   }, []);
 
   return (
-    <div>
+    <div className={styles.wrapper} >
       <h1>Blog List</h1>
       {pending ? (
         <h3>Pending...Please Wait</h3>
       ) : (
-        <div>
+        <div className={styles.blogList}>
           {blogList.map((blogItem) => (
             <div key={blogItem.id}>
               <p>{blogItem.title}</p>
               <p>{blogItem.description}</p>
+              <FaEdit size={30}/>
+              <FaTrash onClick={() => handleDeleteBlog(blogItem.id)} size={30}/>
             </div>
           ))}
         </div>
