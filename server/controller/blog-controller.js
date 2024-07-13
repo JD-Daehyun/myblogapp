@@ -49,3 +49,17 @@ const addNewBlog = async (req, res) => {
 
   return res.status(200).json({ newlyCreatedBlog });
 };
+
+const deleteBlog = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const findCurrentBlog = await Blog.findByIdAndDelete(id);
+    if (!findCurrentBlog) {
+      return res.status(404).json({ message: "Blog Not Found" });
+    }
+    return res.status(200).message({ message: "Deleted!" });
+  } catch (e) {
+    console.log(e);
+    return res.staus(500).json({ message: "Unable To Delete! Try Again" });
+  }
+};
