@@ -1,8 +1,8 @@
 import { useContext, useEffect } from "react";
 import { GlobalContext } from "../../context";
 import axios from "axios";
-import styles from './styles.modules.css';
-import {FaTrash, FaEdit} from 'react-icons/fa'
+import styles from "./styles.module.css";
+import { FaTrash, FaEdit } from "react-icons/fa";
 export default function Home() {
   const { blogList, setBlogList, pending, setPending } =
     useContext(GlobalContext);
@@ -21,8 +21,17 @@ export default function Home() {
     }
   }
 
-  async function handleDeleteBlog(getCurrentId){
-    
+  async function handleDeleteBlog(getCurrentId) {
+    // console.log(getCurrentId)
+    const response = await axios.delete(
+      `http://localhost:5000/api/blogs/delete/${getCurrentId}`
+    );
+    const result = await response.data;
+
+    if (result?.message) {
+      fetchListOfBlogs();
+      // navigate(0)
+    }
   }
 
   useEffect(() => {
@@ -30,20 +39,23 @@ export default function Home() {
   }, []);
 
   return (
-    <div className={styles.wrapper} >
+    <div className={styles.wrapper}>
       <h1>Blog List</h1>
       {pending ? (
         <h3>Pending...Please Wait</h3>
       ) : (
         <div className={styles.blogList}>
-          {blogList.map((blogItem) => (
+          {blogList && blogList.length ? blogList.map((blogItem) => (
             <div key={blogItem.id}>
               <p>{blogItem.title}</p>
               <p>{blogItem.description}</p>
-              <FaEdit size={30}/>
-              <FaTrash onClick={() => handleDeleteBlog(blogItem.id)} size={30}/>
+              <FaEdit size={30} />
+              <FaTrash
+                onClick={() => handleDeleteBlog(blogItem._id)}
+                size={30}
+              />
             </div>
-          ))}
+          )): <h3>No Blogs Yet!</h3>}
         </div>
       )}
     </div>
