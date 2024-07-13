@@ -16,11 +16,10 @@ const fetchListOfBlogs = async (req, res) => {
   }
 
   if (!blogList) {
-    //404 Error
     return res.status(404).json({ message: "No Blogs Found" });
   }
-  //200 Ok
-  return res.status(200).json(blogList);
+
+  return res.status(200).json({ blogList });
 };
 
 const addNewBlog = async (req, res) => {
