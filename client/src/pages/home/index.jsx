@@ -3,9 +3,11 @@ import { GlobalContext } from "../../context";
 import axios from "axios";
 import styles from "./styles.module.css";
 import { FaTrash, FaEdit } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 export default function Home() {
   const { blogList, setBlogList, pending, setPending } =
     useContext(GlobalContext);
+  const navgiate = useNavigate();
 
   async function fetchListOfBlogs() {
     setPending(true);
@@ -30,8 +32,11 @@ export default function Home() {
 
     if (result?.message) {
       fetchListOfBlogs();
-      // navigate(0)
     }
+  }
+
+  function handleEdit(getCurrentItem) {
+    navgiate("/add-blog", { state: { getCurrentItem } });
   }
 
   useEffect(() => {
@@ -45,17 +50,21 @@ export default function Home() {
         <h3>Pending...Please Wait</h3>
       ) : (
         <div className={styles.blogList}>
-          {blogList && blogList.length ? blogList.map((blogItem) => (
-            <div key={blogItem.id}>
-              <p>{blogItem.title}</p>
-              <p>{blogItem.description}</p>
-              <FaEdit size={30} />
-              <FaTrash
-                onClick={() => handleDeleteBlog(blogItem._id)}
-                size={30}
-              />
-            </div>
-          )): <h3>No Blogs Yet!</h3>}
+          {blogList && blogList.length ? (
+            blogList.map((blogItem) => (
+              <div key={blogItem.id}>
+                <p>{blogItem.title}</p>
+                <p>{blogItem.description}</p>
+                <FaEdit onClick={() => handleEdit(blogItem)} size={30} />
+                <FaTrash
+                  onClick={() => handleDeleteBlog(blogItem._id)}
+                  size={30}
+                />
+              </div>
+            ))
+          ) : (
+            <h3>No Blogs Yet!</h3>
+          )}
         </div>
       )}
     </div>
